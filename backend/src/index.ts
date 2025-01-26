@@ -46,3 +46,4 @@ app.get("/meetings", async (req, res) => {
   const allMeetings = await db.select().from(meetings);
   res.json(allMeetings);
 });
+console.log("fd");
