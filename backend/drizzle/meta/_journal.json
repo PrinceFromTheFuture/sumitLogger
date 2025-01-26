@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1737878228712,
+      "tag": "0000_woozy_blue_shield",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1737897316451,
+      "tag": "0001_numerous_wrecker",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1737897380252,
+      "tag": "0002_abandoned_ezekiel_stane",
+      "breakpoints": true
+    }
+  ]
+}
