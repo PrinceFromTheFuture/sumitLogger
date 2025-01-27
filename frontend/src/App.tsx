@@ -13,6 +13,7 @@ function App() {
   const getData = async () => {
     try {
       const res = await axios.get<Meeting[]>(`${baseApiUri}/meetings`);
+      console.log(res.data);
       setMeetings(res.data);
     } catch (e) {
       console.log(e);
@@ -24,9 +25,7 @@ function App() {
   return (
     <div className=" p-4  'w-full  flex justify-center flex-col items-center  min-h-[100vh]">
       <div className=" text-2xl text-darkblue font-bold mb-2">Sumit recorder</div>
-      <div className=" w-full text-center text-md mb-3">
-        Log Your Recordibngs ro make sure no one takes your money!
-      </div>
+      <div className=" w-full text-center text-md mb-3">Log Your Recordibngs ro make sure no one takes your money!</div>
       {}
 
       <NewMeeting />
