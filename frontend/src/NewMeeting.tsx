@@ -10,17 +10,10 @@ const baseApiUri = import.meta.env.VITE_BASE_API_URI as string;
 function NewMeeting() {
   const [meetingDate, setMeetingDate] = useState<Date | null>(dayjs().toDate());
   const [startTime, setStartTime] = useState<string>();
-  //@ts-ignore
   const [endTime, setEndTime] = useState<string>();
-  //@ts-ignore
-
-  const [address, setAdress] = useState();
-  //@ts-ignore
-
-  const [distance, setDistance] = useState();
-  //@ts-ignore
-
-  const [additional, setAditional] = useState();
+  const [address, setAdress] = useState<string>();
+  const [distance, setDistance] = useState<number>();
+  const [additional, setAditional] = useState<string>();
 
   const datePicketRef = useRef<HTMLInputElement>(null);
   const startTimePicketRef = useRef<HTMLInputElement>(null);
@@ -57,14 +50,12 @@ function NewMeeting() {
                 datePicketRef.current.click();
               }
             }}
-            className=" flex items-center gap-2 justify-start  border-lightblue border-2  w-full  rounded-md p-2"
+            className="  items-center gap-2 justify-start  border-lightblue  p-2 flex w-full rounded-md border border-input bg-transparent px-3  text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
           >
             <Calendar size={21} />
-            <div className=" text-sm ">
+            <div className=" text-sm  ">
               <div className="   ">Date</div>
-              <div className="  text-darkblue font-semibold">
-                {dayjs(meetingDate).format("dddd, DD MMMM")}
-              </div>
+              <div className="  text-darkblue font-semibold">{dayjs(meetingDate).format("dddd, DD MMMM")}</div>
             </div>
           </div>
           <div className=" w-full gap-4 flex justify-between items-center mt-4">
@@ -82,7 +73,7 @@ function NewMeeting() {
                   datePicketRef.current.click();
                 }
               }}
-              className=" flex items-center gap-2 justify-start  border-lightblue border-2  w-full  rounded-md p-2"
+              className="  items-center gap-2 justify-start  border-lightblue  p-2 flex w-full rounded-md border border-input bg-transparent px-3  text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
             >
               <Clock size={21} />
               <div className=" text-sm ">
@@ -102,7 +93,7 @@ function NewMeeting() {
                   datePicketRef.current.click();
                 }
               }}
-              className=" flex items-center gap-2 justify-start  border-lightblue border-2  w-full  rounded-md p-2"
+              className="  items-center gap-2 justify-start  border-lightblue  p-2 flex w-full rounded-md border border-input bg-transparent px-3  text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
             >
               <Clock size={21} />
               <div className=" text-sm ">
@@ -113,20 +104,17 @@ function NewMeeting() {
           </div>
           <div className=" mt-4 text-sm">
             Address
-            <Input />
+            <Input value={address} onChange={(e) => setAdress(e.target.value)} />
           </div>
           <div className=" mt-4 text-sm">
             Distance from home (in meters)
-            <Input />
+            <Input type="number" value={distance} onChange={(e) => setDistance(Number(e.target.value))} />
           </div>
           <div className=" mt-4 text-sm">
             Additional info
-            <Input />
+            <Input value={additional} onChange={(e) => setAditional(e.target.value)} />
           </div>
-          <DrawerClose
-            onClick={() => onsubmit()}
-            className=" w-full rounded-lg mt-6 bg-darkblue py-2 text-sm font-semibold text-lightblue"
-          >
+          <DrawerClose onClick={() => onsubmit()} className=" w-full rounded-lg mt-6 bg-darkblue py-2 text-sm font-semibold text-lightblue">
             Save
           </DrawerClose>
         </div>

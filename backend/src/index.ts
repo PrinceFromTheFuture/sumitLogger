@@ -4,6 +4,17 @@ import { meetings } from "./db/schema";
 import cors from "cors";
 import dayjs from "dayjs";
 
+interface Body {
+  meetingDate: Date;
+  startTime: string;
+  endTime: string;
+  address: string;
+  distance: number;
+  additional: string;
+}
+
+const MeetingMinumumLengthPayment = 3;
+const hourlyRateInAgorot = 5000;
 const app = express();
 app.use(cors());
 
@@ -11,39 +22,50 @@ app.listen(3000, () => {
   console.log("app is running op port 3000");
 });
 
-const data = [
-  {
-    distanceFromHome: 1000,
-    endTime: dayjs().add(3, "hours").toDate(),
-    expectedPayment: 3000,
-    name: "random name for the begging",
-    notes: "fdsfsdf",
-    startTime: dayjs().add(10, "hours").toDate(),
-    adress: "monuement point aprtment 3v",
-  },
-
-  {
-    distanceFromHome: 1000,
-    endTime: dayjs().add(3, "hours").toDate(),
-    expectedPayment: 3000,
-    name: "fds",
-    notes: "fdsfgfsdsdf",
-    startTime: dayjs().toDate(),
-    adress: "monuement point aprtment 3v",
-  },
-  {
-    distanceFromHome: 1000,
-    endTime: dayjs().add(3, "hours").toDate(),
-    expectedPayment: 3000,
-    name: "fdsfsd",
-    notes: "fdsfsdf",
-    startTime: dayjs().toDate(),
-    adress: "monuement point aprtment 3v",
-  },
-];
-
 app.get("/meetings", async (req, res) => {
   const allMeetings = await db.select().from(meetings);
   res.json(allMeetings);
 });
-console.log("fd");
+
+app.post("/meetings", async (req, res) => {
+  const { additional, address, distance, endTime, meetingDate, startTime } = req.body as Body;
+
+  const endTimeDateFormat = dayjs(meetingDate)
+    .set("hours", Number(endTime.split(":")[0]))
+    .set("minutes", Number(endTime.split(":")[1]))
+    .toDate();
+  const startTimeDateFormat = dayjs(meetingDate)
+    .set("hours", Number(startTime.split(":")[0]))
+    .set("minutes", Number(startTime.split(":")[1]))
+    .toDate();
+
+  const calculatePayment = () => {
+    let expectedPayment = 0;
+
+    const meetingLength = dayjs(endTimeDateFormat).diff(dayjs(startTimeDateFormat), "hours");
+    const additionalOneHourAheadAndAfter = 1;
+
+    expectedPayment += additionalOneHourAheadAndAfter;
+
+    if (meetingLength < MeetingMinumumLengthPayment) {
+      expectedPayment += MeetingMinumumLengthPayment;
+    } else {
+      expectedPayment += meetingLength;
+    }
+    expectedPayment * hourlyRateInAgorot;
+    return expectedPayment
+  };
+
+  try {
+    await db.insert(meetings).values({
+      adress: address,
+      distanceFromHome: distance,
+      endTime: endTimeDateFormat,
+      startTime: startTimeDateFormat,
+      name: additional,
+      expectedPayment: calculatePayment(),
+    });
+  } catch (e) {
+    console.log(e);
+  }
+});

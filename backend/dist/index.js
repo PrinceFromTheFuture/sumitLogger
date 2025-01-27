@@ -44,40 +44,13 @@ var db_1 = require("./db/db");
 var schema_1 = require("./db/schema");
 var cors_1 = __importDefault(require("cors"));
 var dayjs_1 = __importDefault(require("dayjs"));
+var MeetingMinumumLengthPayment = 3;
+var hourlyRateInAgorot = 5000;
 var app = (0, express_1.default)();
 app.use((0, cors_1.default)());
 app.listen(3000, function () {
     console.log("app is running op port 3000");
 });
-var data = [
-    {
-        distanceFromHome: 1000,
-        endTime: (0, dayjs_1.default)().add(3, "hours").toDate(),
-        expectedPayment: 3000,
-        name: "random name for the begging",
-        notes: "fdsfsdf",
-        startTime: (0, dayjs_1.default)().add(10, "hours").toDate(),
-        adress: "monuement point aprtment 3v",
-    },
-    {
-        distanceFromHome: 1000,
-        endTime: (0, dayjs_1.default)().add(3, "hours").toDate(),
-        expectedPayment: 3000,
-        name: "fds",
-        notes: "fdsfgfsdsdf",
-        startTime: (0, dayjs_1.default)().toDate(),
-        adress: "monuement point aprtment 3v",
-    },
-    {
-        distanceFromHome: 1000,
-        endTime: (0, dayjs_1.default)().add(3, "hours").toDate(),
-        expectedPayment: 3000,
-        name: "fdsfsd",
-        notes: "fdsfsdf",
-        startTime: (0, dayjs_1.default)().toDate(),
-        adress: "monuement point aprtment 3v",
-    },
-];
 app.get("/meetings", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var allMeetings;
     return __generator(this, function (_a) {
@@ -87,6 +60,56 @@ app.get("/meetings", function (req, res) { return __awaiter(void 0, void 0, void
                 allMeetings = _a.sent();
                 res.json(allMeetings);
                 return [2 /*return*/];
+        }
+    });
+}); });
+app.post("/meetings", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var _a, additional, address, distance, endTime, meetingDate, startTime, endTimeDateFormat, startTimeDateFormat, calculatePayment, e_1;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                _a = req.body, additional = _a.additional, address = _a.address, distance = _a.distance, endTime = _a.endTime, meetingDate = _a.meetingDate, startTime = _a.startTime;
+                endTimeDateFormat = (0, dayjs_1.default)(meetingDate)
+                    .set("hours", Number(endTime.split(":")[0]))
+                    .set("minutes", Number(endTime.split(":")[1]))
+                    .toDate();
+                startTimeDateFormat = (0, dayjs_1.default)(meetingDate)
+                    .set("hours", Number(startTime.split(":")[0]))
+                    .set("minutes", Number(startTime.split(":")[1]))
+                    .toDate();
+                calculatePayment = function () {
+                    var expectedPayment = 0;
+                    var meetingLength = (0, dayjs_1.default)(endTimeDateFormat).diff((0, dayjs_1.default)(startTimeDateFormat), "hours");
+                    var additionalOneHourAheadAndAfter = 1;
+                    expectedPayment += additionalOneHourAheadAndAfter;
+                    if (meetingLength < MeetingMinumumLengthPayment) {
+                        expectedPayment += MeetingMinumumLengthPayment;
+                    }
+                    else {
+                        expectedPayment += meetingLength;
+                    }
+                    expectedPayment * hourlyRateInAgorot;
+                    return expectedPayment;
+                };
+                _b.label = 1;
+            case 1:
+                _b.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, db_1.db.insert(schema_1.meetings).values({
+                        adress: address,
+                        distanceFromHome: distance,
+                        endTime: endTimeDateFormat,
+                        startTime: startTimeDateFormat,
+                        name: additional,
+                        expectedPayment: calculatePayment(),
+                    })];
+            case 2:
+                _b.sent();
+                return [3 /*break*/, 4];
+            case 3:
+                e_1 = _b.sent();
+                console.log(e_1);
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
         }
     });
 }); });
