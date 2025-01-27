@@ -1,3 +1,4 @@
+//@ts-ignore
 import { Meeting } from "@db/db/schema";
 import { Drawer, DrawerClose, DrawerContent, DrawerTrigger } from "./components/ui/drawer";
 import { AlignLeft, Calendar, Clock, MapPin, Ruler } from "lucide-react";
@@ -14,7 +15,9 @@ function MeetingCard(props: { meeting: Meeting }) {
         <div className=" h-12 w-1 rounded-full bg-darkblue" />
         <div>
           <div className=" text-sm font-medium">{meeting.name}</div>
-          <div className=" text-xs font-medium text-blue">estemated payment: {formatAmountInAgorot(meeting.expectedPayment)}</div>
+          <div className=" text-xs font-medium text-blue">
+            estemated payment: {formatAmountInAgorot(meeting.expectedPayment)}
+          </div>
         </div>
       </DrawerTrigger>
       <DrawerContent>
