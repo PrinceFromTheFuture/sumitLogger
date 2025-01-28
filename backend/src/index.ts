@@ -17,6 +17,7 @@ const MeetingMinumumLengthPayment = 3;
 const hourlyRateInAgorot = 5000;
 const app = express();
 app.use(cors());
+app.use(express.json());
 
 app.listen(3000, () => {
   console.log("app is running op port 3000");
@@ -28,8 +29,8 @@ app.get("/meetings", async (req, res) => {
 });
 
 app.post("/meetings", async (req, res) => {
+  console.log(req.body);
   const { additional, address, distance, endTime, meetingDate, startTime } = req.body as Body;
-
   const endTimeDateFormat = dayjs(meetingDate)
     .set("hours", Number(endTime.split(":")[0]))
     .set("minutes", Number(endTime.split(":")[1]))
@@ -52,8 +53,9 @@ app.post("/meetings", async (req, res) => {
     } else {
       expectedPayment += meetingLength;
     }
-    expectedPayment * hourlyRateInAgorot;
-    return expectedPayment
+    expectedPayment *= hourlyRateInAgorot;
+    console.log(expectedPayment);
+    return expectedPayment;
   };
 
   try {
